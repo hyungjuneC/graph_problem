@@ -10,9 +10,9 @@ public class Vertex {
 	
 	String name = "";
 	
-	double avHit = 0.0;
-	double OPS = 0.0;
-	double WAR = 0.0;
+	public double avHit[];
+	public double OPS[];
+	public double WPA[];
 	
 	
 	

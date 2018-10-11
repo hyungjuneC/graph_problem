@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
@@ -19,63 +20,144 @@ public class Crawling extends Thread{
 	 static int count = 0;
 	 static int j  = 0 ;
 	static int count2 = 0; 
-	static Element foodname;
-	static Elements names;
+	static Element avHit;
+	static Elements infos;
 	static Elements nutritions;
 	static Element a; 
+	static Scanner s;
+	static Batters bat;
+	static FileWriter crawlwriter;
+	private static final String LINE_SEPARATOR = System
+
+            .getProperty("line.separator");
+
+
+
+	Crawling(){
+		
 	
-	static File output = new File("FoodDB.db");
+	
+	}
+	
+	
+	//25
+	
+	
     
 	public static void main(String[] args) {
 		
+		File outputfile = new File("battersinfo.txt");
 		try {
-			for(int i = 1; i<6; i++) {
-		    String url = "https://www.foodsafetykorea.go.kr/portal/healthyfoodlife/foodnutrient/simpleSearch.do?menu_no=2805&menu_grp=MENU_NEW03&code4=2&code2=&search_name=&page=";
-		    url = url.concat(String.valueOf(i));
-			Document kofood = Jsoup.connect(url).get();
-			String html = kofood.html();
-			 foodname =kofood.select("#tab2").get(0);
-			 names = foodname.select("a");
-			 nutritions = foodname.select("td");
-			 
+			crawlwriter = new FileWriter(outputfile);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		File inputfile = new File("battersURL.txt");
+		
+		try {
+			s = new Scanner(inputfile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		
+		}
+		
+		
+		
+		while(s.hasNextLine()) {
+		try {
+			
+			String teststr = s.nextLine();
+		    String[] playerinfo = teststr.split(",");
+		    
+		    crawlwriter.write(playerinfo[1]+",");
+			Document batterinfo = Jsoup.connect(playerinfo[2]).get();
+			String html = batterinfo.html();
+			
+			
+			infos = batterinfo.select("td[class=statdata]");
+			
+			Elements info = infos.select("span");
+			
+			int length = info.size();
+			String prins = info.html();
+			Element test = info.get(44);
+			String testst = test.text();
+			System.out.println(testst);
+			for(int i = 2; i < length/25; i++){
+				int avH = 19+25*i;
+				int OP = 21+25*i;
+				int WP  = 24+25*i;
+				
+				
+				
+					Element a = info.get(avH);
+					String avHit = a.text();
+					if(avHit==null) {
+						crawlwriter.write("0,");
+						}
+						else {
+						crawlwriter.write(avHit+",");
+						System.out.println("avHIT:"+avHit);
+						}
+					
+					
+					
+						Element b = info.get(OP);
+						String OPS = b.text();
+						if(OPS==null) {
+							crawlwriter.write("0,");
+							}
+						else {
+						crawlwriter.write(OPS+",");
+						System.out.println("OPS:"+OPS);
+						}
+					
+					
+					
+						
+						Element c = info.get(WP);
+						String WPA = c.text();
+						if(WPA==null) {
+							crawlwriter.write("0,");
+							}
+						else {
+						crawlwriter.write(WPA+",");
+						System.out.println("WPA:"+WPA);
+						}
+				
+				}
+			
+			crawlwriter.write(LINE_SEPARATOR);
+				
+			
 			
 			
 		     
 		    	 
-		         count = 0;
-		         count2 = 0;
-		        
-		         for(Element e: names) {
-		        	 count++;
-		        	 if(count>=3) {
-				        System.out.print(e.text());
-				        System.out.print(":");
-		        	 
-		        	 for(j = 2+count2*11; j<(6+count2*11); j++) {
-							
-							a = nutritions.get(j);
-							 if(j==(5+count2*11)) {
-					        	 System.out.print(a.text());
-					        	 System.out.println("");
-					         }else {
-					        	 System.out.print(a.text());
-					        	 System.out.print(":");
-						
-					         }
-						}
-		        	 count2++;
-		        	 }
-		        	 
-		        	 
-		         }
+		     
 		        
 		    
 		      
 
 		   
-	}
+
 			
 			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		 
+		}
+		
+		s.close();
+		try {
+			crawlwriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,5 +165,130 @@ public class Crawling extends Thread{
 		 
 		 
 
-}}
+}
+	
+public void Crawl(int BackNum){
+	
+	File outputfile = new File("battersinfo.txt");
+	try {
+		crawlwriter = new FileWriter(outputfile);
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	
+	
+	File inputfile = new File("battersURL.txt");
+	
+	try {
+		s = new Scanner(inputfile);
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	
+	}
+	
+	
+	
+	while(s.hasNextLine()) {
+	try {
+		
+		String teststr = s.nextLine();
+	    String[] playerinfo = teststr.split(",");
+	    
+	    crawlwriter.write(playerinfo[1]+",");
+		Document batterinfo = Jsoup.connect(playerinfo[2]).get();
+		String html = batterinfo.html();
+		
+		
+		infos = batterinfo.select("td[class=statdata]");
+		
+		Elements info = infos.select("span");
+		
+		int length = info.size();
+		String prins = info.html();
+		Element test = info.get(44);
+		String testst = test.text();
+		System.out.println(testst);
+		for(int i = 2; i < length/25; i++){
+			int avH = 19+25*i;
+			int OP = 21+25*i;
+			int WP  = 24+25*i;
+			
+			
+			
+				Element a = info.get(avH);
+				String avHit = a.text();
+				
+				if(avHit==null) {
+				crawlwriter.write("0,");
+				}
+				else {
+				crawlwriter.write(avHit+",");
+				System.out.println("avHIT:"+avHit);
+				}
+			
+			
+			
+				Element b = info.get(OP);
+				String OPS = b.text();
+				if(OPS==null) {
+					crawlwriter.write("0,");
+					}
+				else {
+				crawlwriter.write(OPS+",");
+				System.out.println("OPS:"+OPS);
+				}
+			
+			
+			
+				
+				Element c = info.get(WP);
+				String WPA = c.text();
+				if(WPA==null) {
+					crawlwriter.write("0,");
+					}
+				else {
+				crawlwriter.write(WPA+",");
+				System.out.println("WPA:"+WPA);
+				}
+			
+			}
+		
+		
+		
+		
+		
+	     
+	    	 
+	     
+	        
+	    
+	      
+
+	   
+
+		
+		
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	 
+	}
+	
+	s.close();
+	try {
+		crawlwriter.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+}
+
+
+
+}
 
